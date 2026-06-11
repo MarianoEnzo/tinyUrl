@@ -1,4 +1,4 @@
-# TinyURL — Groobyte
+# TinyURL Groobyte
 
 Acortador de URLs construido con NestJS, MongoDB, Redis y BullMQ. Soporta alias personalizados, seguimiento de clics y estadísticas por link.
 
@@ -36,7 +36,7 @@ docker compose up --build
 
 Listo. La app queda disponible en `http://localhost:3000`.
 
-No es necesario crear ningún archivo `.env` — los valores por defecto ya están configurados para el entorno Docker.
+No es necesario crear ningún archivo `.env` los valores por defecto ya están configurados para el entorno Docker.
 
 ## Ejecutar localmente (sin Docker)
 
@@ -56,14 +56,14 @@ npm run start:dev
 
 ## Variables de entorno
 
-| Variable     | Default Docker                      | Default local                       | Descripción                     |
-| ------------ | ----------------------------------- | ----------------------------------- | ------------------------------- |
-| `PORT`       | `3000`                              | `3000`                              | Puerto en el que escucha la app |
-| `MONGO_URI`  | `mongodb://mongo:27017/tinyurl`     | `mongodb://localhost:27017/tinyurl` | Cadena de conexión a MongoDB    |
-| `REDIS_HOST` | `redis`                             | `localhost`                         | Host de Redis                   |
-| `REDIS_PORT` | `6379`                              | `6379`                              | Puerto de Redis                 |
+| Variable     | Default Docker                  | Default local                       | Descripción                     |
+| ------------ | ------------------------------- | ----------------------------------- | ------------------------------- |
+| `PORT`       | `3000`                          | `3000`                              | Puerto en el que escucha la app |
+| `MONGO_URI`  | `mongodb://mongo:27017/tinyurl` | `mongodb://localhost:27017/tinyurl` | Cadena de conexión a MongoDB    |
+| `REDIS_HOST` | `redis`                         | `localhost`                         | Host de Redis                   |
+| `REDIS_PORT` | `6379`                          | `6379`                              | Puerto de Redis                 |
 
-Para sobrescribir cualquier valor en Docker, crear un `.env` en la raíz — se aplica encima de los defaults.
+Para sobrescribir cualquier valor en Docker, crear un `.env` en la raíz se aplica encima de los defaults.
 
 ## Endpoints de la API
 
@@ -73,7 +73,7 @@ Para sobrescribir cualquier valor en Docker, crear un `.env` en la raíz — se 
 | `GET`  | `/:code`           | Redirigir a la URL original     |
 | `GET`  | `/api/stats/:code` | Obtener estadísticas de un link |
 
-### POST `/` — Acortar una URL
+### POST `/` Acortar una URL
 
 **Body:**
 
@@ -132,16 +132,16 @@ Es rápido, es algo con lo que tengo experiencia y es parte del stack que usa Gr
 
 ### BullMQ para registro asíncrono de clics
 
-El redirect tiene que ser inmediato — registrar el clic no puede bloquear eso. La solución es procesar ese evento de forma asíncrona: BullMQ encola el trabajo y un worker lo procesa en background sin afectar la respuesta al usuario.
+El redirect tiene que ser inmediato registrar el clic no puede bloquear eso. La solución es procesar ese evento de forma asíncrona: BullMQ encola el trabajo y un worker lo procesa en background sin afectar la respuesta al usuario.
 
 La elección de BullMQ específicamente tiene varias razones:
 
 - **Reutiliza Redis**: como Redis ya estaba en la infra para el caché, BullMQ corre sobre la misma instancia sin agregar ninguna dependencia nueva al stack.
-- **Persistencia**: los jobs quedan guardados en Redis. Si el worker se cae o se reinicia, los eventos no se pierden — se procesan cuando vuelve.
+- **Persistencia**: los jobs quedan guardados en Redis. Si el worker se cae o se reinicia, los eventos no se pierden se procesan cuando vuelve.
 - **Reintentos automáticos**: si algo falla al guardar un evento en la base de datos, BullMQ reintenta el job sin que haya que programar esa lógica manualmente.
 - **Simplicidad**: la integración con NestJS es directa con `@nestjs/bullmq`, y para el volumen de una app como esta es más que suficiente.
 
-Alternativas como RabbitMQ o Kafka fueron descartadas porque agregan infraestructura extra y complejidad operacional que no se justifica acá. Kafka está pensado para millones de eventos por segundo con múltiples consumidores y retención de logs — es una herramienta enorme para un problema chico. BullMQ hace el trabajo con lo que ya tenemos.
+Alternativas como RabbitMQ o Kafka fueron descartadas porque agregan infraestructura extra y complejidad operacional que no se justifica acá. Kafka está pensado para millones de eventos por segundo con múltiples consumidores y retención de logs es una herramienta enorme para un problema chico. BullMQ hace el trabajo con lo que ya tenemos.
 
 ### nanoid para generación de códigos
 

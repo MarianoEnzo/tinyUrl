@@ -29,7 +29,7 @@ Acortador de URLs construido con NestJS, MongoDB, Redis y BullMQ. Soporta alias 
 ## Levantar con Docker Compose
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/MarianoEnzo/tinyUrl
 cd tiny-url
 docker compose up --build
 ```
